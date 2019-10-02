@@ -6,11 +6,19 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using PuppeteerSharp;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
 
 namespace Matchez
 {
     public class Match
-    {        
+    {
+        private static IWebDriver webDriver;
+        private static TimeSpan defaultWait = TimeSpan.FromSeconds(50);
+
+        private static String driversDir = @"C:\Users\a1ole\Desktop\chromedriver_win32";
+
         public static HtmlWeb hw = new HtmlWeb();
         public HtmlDocument ThuuzPage { get; set; }
         public HtmlDocument NbaStatPage { get; set; }
@@ -43,40 +51,38 @@ namespace Matchez
 
             string url = ( NbaStatLink + "00" + (_id + 21588897));
 
-            var htmlAsTask = LoadAndWaitForSelector(url, "head");//nba-stat-table__overflow
-            htmlAsTask.Wait();
-            Console.WriteLine(htmlAsTask.Result);
+            //var chromeOptions = new ChromeOptions();
+            //chromeOptions.AddArguments("headless");
 
-            Console.ReadKey();
-            
+            using (webDriver = new ChromeDriver(driversDir/*, chromeOptions*/))
+            {
+                webDriver.Navigate().GoToUrl(url);
+                IWebElement table = FindElement(By.XPath("html/body/main/div[2]/div/div/div[4]/div/div[2]/div/nba-stat-table[1]/div[2]/div[1]/table/tfoot"));///div[4]
+                var innerHtml = table.GetAttribute("innerHTML");
+            }
 
         }
 
-        static void Plain(string url)
+        #region (!) I didn't even use this, but it can be useful (!)
+        public static IWebElement FindElement(By by)
         {
-            var htmlAsTask = LoadAndWaitForSelector(url, "nba-stat-table");
-            htmlAsTask.Wait();
-            Console.WriteLine(htmlAsTask.Result);
-
-            Console.ReadKey();
-        }
-
-        public static async Task<string> LoadAndWaitForSelector(String url, String selector)
-        {
-            var browser = await Puppeteer.LaunchAsync(new LaunchOptions
+            try
             {
-                Headless = true,
-                ExecutablePath = @"c:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
-            });
-            using (Page page = await browser.NewPageAsync())
+                WaitForAjax();
+                var wait = new WebDriverWait(webDriver, defaultWait);
+                return wait.Until(driver => driver.FindElement(by));
+            }
+            catch
             {
-                await page.GoToAsync(url);
-                await page.WaitForSelectorAsync(selector);
-                return await page.GetContentAsync();
+                return null;
             }
         }
 
-
-
+        public static void WaitForAjax()
+        {
+            var wait = new WebDriverWait(webDriver, defaultWait);
+            wait.Until(d => (bool)(d as IJavaScriptExecutor).ExecuteScript("return jQuery.active == 0"));
+        }
+        #endregion
     }
 }
