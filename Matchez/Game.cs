@@ -10,11 +10,12 @@ namespace Matchez
     {
         public string Ref720 { get; set; }
 
-
         public HtmlWeb hw = new HtmlWeb();
 
         public string ThuuzPrefix { get; set; }
-        public string ThuuzId { get; set; } //211600
+        public string ThuuzId { get; set; } //211104 211201 211699
+
+
         public HtmlDocument ThuuzPage { get; set; }//http://www.thuuz.com/basketball/nba/game
 
         static readonly string ThuuzRatingXpath = "//*[@id=\"circle\"]/div/div";
