@@ -6,7 +6,7 @@ namespace Matchez
 {
     public class Team
     {
-        private string innerText;
+        public string innerText;
 
         public Team(string innerText)
         {

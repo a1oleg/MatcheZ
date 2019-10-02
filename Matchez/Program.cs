@@ -10,25 +10,13 @@ namespace Matchez
     {
         static void Main(string[] args)
         {
-            HtmlWeb hw = new HtmlWeb();
+            //211104 212333  1229     0021800001   0021801230       21588897
 
-            HtmlDocument Page = hw.Load("http://720pier.ru/viewforum.php?f=34");
-
-            string Xpath = "html/body/div/div/div[5]/div/ul[2]/li";                        
-
-            List<HtmlNode> nodes = Page.DocumentNode.SelectNodes(Xpath).ToList();
-
-            
-
-            List<Game> games = new List<Game>();
-            for(int i = 1; i < nodes.Count(); i++)
+            for (int i= 211104; i < 212333; i++)
             {
-                HtmlNode a = nodes.ElementAt(i).SelectSingleNode(nodes.ElementAt(i).XPath + "/dl/dt/div/a");
-                games.Add(new Game(a.OuterHtml));                
+                Match match = new Match(i);
 
-            }
-
-
+            }  
         }
     }
 }
