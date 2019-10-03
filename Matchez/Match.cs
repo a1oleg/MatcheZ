@@ -64,25 +64,26 @@ namespace Matchez
             htmlAsTask.Wait();
 
             var htmlDoc = new HtmlDocument();
+
             htmlDoc.LoadHtml(htmlAsTask.Result);
 
-            var htmlBody = htmlDoc.DocumentNode.SelectSingleNode(tbodyXpath);
+            Team1 = htmlDoc.DocumentNode.SelectSingleNode(tbodyXpath).InnerHtml;
+            Team2 = htmlDoc.DocumentNode.SelectSingleNode(GAMEINFOXpath).InnerHtml;
 
-            //Console.WriteLine(htmlAsTask.Result);
-            //Console.ReadKey();
+            
 
-            var chromeOptions = new ChromeOptions();
-            chromeOptions.AddArguments("headless");
+            //var chromeOptions = new ChromeOptions();
+            //chromeOptions.AddArguments("headless");
 
-            using (webDriver = new ChromeDriver(driversDir, chromeOptions))
-            {
-                webDriver.Navigate().GoToUrl(url);
-                IWebElement tbody = webDriver.FindElement(By.XPath(tbodyXpath));
-                Team1 = tbody.GetAttribute("innerHTML");
+            //using (webDriver = new ChromeDriver(driversDir, chromeOptions))
+            //{
+            //    webDriver.Navigate().GoToUrl(url);
+            //    IWebElement tbody = webDriver.FindElement(By.XPath(tbodyXpath));
+            //    Team1 = tbody.GetAttribute("innerHTML");
 
-                IWebElement GAMEINFO = webDriver.FindElement(By.XPath(GAMEINFOXpath));
-                Team2 = GAMEINFO.GetAttribute("innerHTML");
-            }
+            //    IWebElement GAMEINFO = webDriver.FindElement(By.XPath(GAMEINFOXpath));
+            //    Team2 = GAMEINFO.GetAttribute("innerHTML");
+            //}
 
         }
 

@@ -20,9 +20,9 @@ namespace Matchez
                 var ws = p.Workbook.Worksheets[0];
 
                 //211104 212333  1229     33329   34472
-                int r = 1;
+                int r = 71;
 
-                for (int i = 33376; i < 33377; i++) //33417
+                for (int i = 33399; i < 33429; i++) //
                 {
                     Match match = new Match(i);
 
