@@ -1,41 +1,22 @@
 ﻿using HtmlAgilityPack;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using PuppeteerSharp;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 
 namespace Matchez
 {
-    public class Match
+    public class FoxPupMatch
     {
-        private static IWebDriver webDriver;
-        private static TimeSpan defaultWait = TimeSpan.FromSeconds(50);
+        //private static IWebDriver webDriver;
+        //private static TimeSpan defaultWait = TimeSpan.FromSeconds(50);
 
-        private static String driversDir = @"C:\Users\a1ole\Desktop\chromedriver_win32";
+        //private static String driversDir = @"C:\Users\a1ole\Desktop\chromedriver_win32";               
 
-        public static HtmlWeb hw = new HtmlWeb();
-        public HtmlDocument ThuuzPage { get; set; }        
-
-        static readonly string foxsportLink = "https://www.foxsports.com/nba/boxscore?id=";        
-
-        static readonly string ThuuzRatingXpath = "//*[@id=\"circle\"]/div/div";
-
-        static readonly string ThuuzTeam1Xpath = "//*[@id=\"game-summary\"]/div[1]/table/tbody/tr[3]/td[1]/div/span";
-
-        static readonly string ThuuzTeam2Xpath = "//*[@id=\"game-summary\"]/div[1]/table/tbody/tr[4]/td[1]/div/span";
-
-        //static readonly string LeadChangeXpath = "//*[@id=\"wisbb_bsPlayerStats\"]/div[4]/div[3]/span";
-
-        //static readonly string TimesTiedXpath = "//*[@id=\"wisbb_bsPlayerStats\"]/div[4]/div[4]/span";
-
-        //static readonly string AttendanceXpath = "//*[@id=\"wisbb_bsPlayerStats\"]/div[4]/div[1]/span";
-
+        static readonly string foxsportLink = "https://www.foxsports.com/nba/boxscore?id=";       
+                
+        
         static readonly string tbodyXpath = "//*[@id=\"wisbb_bsPlayerStats\"]/div[2]/table/tbody";
 
         static readonly string GAMEINFOXpath = "//*[@id=\"wisbb_bsPlayerStats\"]/div[4]";
@@ -49,7 +30,7 @@ namespace Matchez
         
 
 
-        public Match(int _id)
+        public FoxPupMatch(int _id)
         {
             Id = _id;
             string url = foxsportLink + _id;

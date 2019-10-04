@@ -12,27 +12,28 @@ namespace Matchez
     {
         static void Main(string[] args)
         {
-            var fi = new FileInfo(@"C:\Users\a1ole\Desktop\myworkbook.xlsx");
+            var fi = new FileInfo(@"C:\Users\a1ole\YandexDisk\foxmatchez.xlsx");
 
 	        using (var p = new ExcelPackage(fi))
             {
                 
                 var ws = p.Workbook.Worksheets[0];
 
-                //211104 212333  1229     33329   34472
-                int r = 71;
+                //211104 - 211201-211699 212333  1229     33329   34472
+                int r = 306;
 
-                for (int i = 33399; i < 33429; i++) //
+                for (int i = 33634; i < 34472; i++) //
                 {
-                    Match match = new Match(i);
+                    FoxPupMatch match = new FoxPupMatch(i);
 
                     ws.Cells[r,1].Value = match.Id;
                     ws.Cells[r,2].Value = match.Team1;
                     ws.Cells[r,3].Value = match.Team2;
 
+                    Console.WriteLine(r);
+
                     r++;
                     p.Save();
-                    Console.WriteLine(r);
                 }
 
                 
