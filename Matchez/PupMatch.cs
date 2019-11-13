@@ -43,7 +43,7 @@ namespace Matchez
         public PupMatch(int _id, bool foxOrThuuz)
         {
             Id = _id;
-            string url = foxOrThuuz ? foxsportLink : ThuuzLink + _id;
+            string url = foxOrThuuz ? foxsportLink + _id : ThuuzLink + _id;
 
             var htmlAsTask = LoadAndWaitForSelector(url, foxOrThuuz ? FoxSelector  : ThuuzSelector) ;
             htmlAsTask.Wait();
@@ -80,13 +80,15 @@ namespace Matchez
             {
                 Headless = true,
                 ExecutablePath = @"c:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
-            });
+            }) ;
             using (Page page = await browser.NewPageAsync())
             {
                 await page.GoToAsync(url);
                 await page.WaitForSelectorAsync(selector);
                 //var x = page.QuerySelectorAsync(selector);
-                return await page.GetContentAsync();
+                var x = await page.GetContentAsync();
+                browser.Dispose();
+                return x;
             }
         }
     }
