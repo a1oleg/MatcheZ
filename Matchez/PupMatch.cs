@@ -11,7 +11,9 @@ namespace Matchez
     {        
         static string foxsportLink = "https://www.foxsports.com/nba/boxscore?id=";
 
-        static readonly string ThuuzLink = "https://www.thuuz.com/basketball/nba/game/";
+        static string ThuuzLink = "https://www.thuuz.com/basketball/nba/game/";
+        
+        static string Thuuz2dgraphLink = "https://www.thuuz.com/2dgraph/";
         
 
         static string FoxSelector = "#wisbb_bsPlayerStats > div.wisbb_bsTeamCompare > table > tbody";
