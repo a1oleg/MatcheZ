@@ -12,7 +12,15 @@ namespace Matchez
     {
         static void Main(string[] args)
         {
-            ThuuzMatch tm = new ThuuzMatch(211105);
+            Repo.StartLocale();
+            //211104 212333  1229     33329 – 34471 = – 1142  
+            for (int i = 173468; i <= 174698; i++)
+            {
+                ThuuzMatch tm = new ThuuzMatch(i);
+
+                Repo.MergeThuuzMatch(tm);
+            }
+                
             
             
          //   var fi = new FileInfo(@"C:\Users\a1ole\YandexDisk\foxmatchez.xlsx");
@@ -23,7 +31,7 @@ namespace Matchez
 
          //       var ws = p.Workbook.Worksheets[0];
 
-         //       //211104 212333  1229     33329 – 34471 = – 1142  
+         //       
          //       int r = 420;
 
          //       for (int i = 33748; i < 34472; i++) //

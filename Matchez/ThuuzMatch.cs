@@ -41,85 +41,80 @@ namespace Matchez
         public int ThuuzId { get; set; }        
         public string Date { get; set; }
 
-        public List<int> var_gec { get; set; }
+        public List<int> gec { get; set; }
 
-        public int avind { get; set; }
-        public List<int> var_gec_away { get; set; }
-        public List<int> var_gec_home { get; set; }
+        public int avgec { get; set; }
+        public List<int> gec_away { get; set; }
+        public List<int> gec_home { get; set; }
 
 
 
         public ThuuzMatch(int _id)
         {
             ThuuzId = _id;
-            string url = ThuuzLink + _id;
-            var url2 = Thuuz2dgraphLink + _id;
-            string[] arrs = GetTextAgility(url2);
-            
+            string urlTD = ThuuzLink + _id;
+            string urlGec = Thuuz2dgraphLink + _id;
+
+            GetGec(urlGec);
+            GetTeamsDates(urlTD);
+        }        
+
+        public void GetGec(String url)
+        {
+            var web = new HtmlWeb();
+            var doc = web.Load(url);
+            var arrs = doc.Text.Split("_data = \"");
+
             var var_gecL = arrs[1].Split(',').Take(50).ToList();
-            var_gec = Remover(var_gecL);
-            
-            avind = (int)var_gec.Average();
-
+            this.gec = Remover(var_gecL);
+            if(gec.Count() > 0)
+                this.avgec = (int)gec.Average();
             var var_gec_awayL = arrs[2].Split(',').Take(50).ToList();
-            var_gec_away = Remover(var_gec_awayL);
+            this.gec_away = Remover(var_gec_awayL);
             var var_gec_homeL = arrs[3].Split(',').Take(50).ToList();
-            var_gec_home = Remover(var_gec_homeL);
-
-            var htmlAsTask = LoadAndWaitForSelector(url,  ThuuzSelector);
-            htmlAsTask.Wait();
-
-            HtmlDocument htmlDoc = new HtmlDocument();
-
-            htmlDoc.LoadHtml(htmlAsTask.Result);
-
-            Team1 = htmlDoc.DocumentNode.SelectSingleNode(Team1Xpath).InnerText;
-            Team2 = htmlDoc.DocumentNode.SelectSingleNode(Team2Xpath).InnerText;
-
-            Date = htmlDoc.DocumentNode.SelectSingleNode(DateXpath).InnerText.Split("Final - ")[1].Split(@"\")[0];
-
+            this.gec_home = Remover(var_gec_homeL);
         }
+
+        public void GetTeamsDates(String url)
+        {
+            var web = new HtmlWeb();
+            var doc = web.Load(url);
+
+            //"Upcoming - 7:00 PM (EDT) 11/1/12
+            try
+            {
+                Date = doc.Text.Split("Final - ")[1].Substring(0, 8);
+            }
+            catch
+            {
+                try
+                {
+                    Date = doc.Text.Split("DT) ")[1].Substring(0, 8);
+                }
+                catch
+                {
+                    Date = doc.Text.Split("ST) ")[1].Substring(0, 8);
+                }
+                
+            }
+
+
+            Team1 = doc.Text.Split("Thuuz - ")[1].Split(" at ")[0];
+            Team2 = doc.Text.Split("Thuuz - ")[1].Split(" at ")[1].Split(" (")[0];
+        }
+
+
 
         public static List<int> Remover(List<string> li)
         {
             List<int> wn = new List<int>();// { 12, 25, 38 };
             int y = 0;
-            foreach(string x in li.Where(x => Int32.TryParse(x, out y)))
+            foreach (string x in li.Where(x => Int32.TryParse(x, out y)))
             {
                 wn.Add(y);
             }
             return wn;
         }
-
-        public static string[] GetTextAgility(String url)
-        {
-            var web = new HtmlWeb();
-            var doc = web.Load(url);
-            return doc.Text.Split("_data = \"");
-        }
-
-        public static async Task<string[]> GetContentAsync(String url)
-        {
-            
-
-            var browser = await Puppeteer.LaunchAsync(new LaunchOptions
-            {
-                Headless = true,
-                ExecutablePath = @"c:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
-            });
-
-            using (var page = await browser.NewPageAsync())
-            {
-
-                await page.GoToAsync(url);
-                var x = await page.GetContentAsync();
-                var y = x.Split("_data = \"");                                
-
-                browser.Dispose();
-                return y;
-            }
-        }
-
         public static async Task<string> LoadAndWaitForSelector(String url, String selector)
         {
             var browser = await Puppeteer.LaunchAsync(new LaunchOptions
