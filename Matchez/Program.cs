@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using OfficeOpenXml;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,14 +13,19 @@ namespace Matchez
     {
         static void Main(string[] args)
         {
-            Repo.StartLocale();
-            //211104 212333  1229     33329 – 34471 = – 1142  
-            for (int i = 173468; i <= 174698; i++)
-            {
-                ThuuzMatch tm = new ThuuzMatch(i);
 
-                Repo.MergeThuuzMatch(tm);
-            }
+
+            PupMatch fm = new PupMatch(20121104, "ORL");
+
+
+            //Repo.StartLocale();
+            ////211104 212333  1229     33329 – 34471 = – 1142  
+            //for (int i = 265141; i <= 266114; i++)
+            //{
+            //    ThuuzMatch tm = new ThuuzMatch(i);
+            //    if (tm.ThuuzId != 0)
+            //        Repo.MergeThuuzMatch(tm);
+            //}
                 
             
             

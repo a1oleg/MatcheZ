@@ -8,73 +8,45 @@ using OpenQA.Selenium.Support.UI;
 namespace Matchez
 {
     public class PupMatch
-    {        
-        static string foxsportLink = "https://www.foxsports.com/nba/boxscore?id=";
-
-        static string ThuuzLink = "https://www.thuuz.com/basketball/nba/game/";
+    {
+        static string BasRefLink = "https://www.basketball-reference.com/boxscores/";
         
-        static string Thuuz2dgraphLink = "https://www.thuuz.com/2dgraph/";
-        
+        static string BoxScoreSelector = "#four_factors > thead > tr";
+        static string FourFactors = "/html/body/div[2]/div[4]/div[5]/div[2]/div/div[3]/div/table/tbody";
 
-        static string FoxSelector = "#wisbb_bsPlayerStats > div.wisbb_bsTeamCompare > table > tbody";
+        static string BasRefLinkpbp = "https://www.basketball-reference.com/boxscores/pbp/";
 
-        static string tbodyXpath = "//*[@id=\"wisbb_bsPlayerStats\"]/div[2]/table/tbody";
-
-        static string gameinfoXpath = "//*[@id=\"wisbb_bsPlayerStats\"]/div[4]";
-
-
-        static string ThuuzSelector = "#circle > div";
-
-        static readonly string RatingXpath = "/html/body/div[2]/div[3]/div[1]/table/tbody/tr[1]/td[1]/div[1]/div[1]";
-        //static readonly string RatingXpath = "//*[@id=\"circle\"]/div/div";
-
-        static readonly string DateXpath = "/html/body/div[2]/div[2]/table/tbody/tr/td[2]";
-
-        static readonly string Team1Xpath = "/html/body/div[2]/div[3]/div[1]/table/tbody/tr[1]/td[2]/div";
-
-        static readonly string Team2Xpath = "/html/body/div[2]/div[3]/div[1]/table/tbody/tr[2]/td[1]/div";
+        static string TiesLeadChanges = "/html/body/div[2]/div[4]/div[5]/div[3]/div/div[1]/table/tbody";
+        static string MostConsecutivePoints = "/html/body/div[2]/div[4]/div[5]/div[3]/div/div[2]/table/tbody";
+        static string LongestScoringDrought = "/html/body/div[2]/div[4]/div[5]/div[3]/div/div[3]/table/tbody";
 
 
-        public string Team1 { get; set; }
-        public string Team2 { get; set; }
-        public int Id { get; set; } 
-        public int Rate { get; set; }
 
-        public string Date { get; set; }
-
-        public PupMatch(int _id, bool foxOrThuuz)
+        public PupMatch(int date, string home)
         {
-            Id = _id;
-            string url = foxOrThuuz ? foxsportLink + _id : ThuuzLink + _id;
+            string url = BasRefLink + date + '0' + home.ToUpper() + ".html";
 
-            var htmlAsTask = LoadAndWaitForSelector(url, foxOrThuuz ? FoxSelector  : ThuuzSelector) ;
+            var htmlAsTask = LoadAndWaitForSelector(url, BoxScoreSelector) ;
             htmlAsTask.Wait();
 
-            HtmlDocument htmlDoc = new HtmlDocument();
+            HtmlDocument doc = new HtmlDocument();
 
-            htmlDoc.LoadHtml(htmlAsTask.Result);
+            doc.LoadHtml(htmlAsTask.Result);
 
-            if(foxOrThuuz)
-            {
-                Team1 = htmlDoc.DocumentNode.SelectSingleNode(tbodyXpath).InnerHtml;
-                Team2 = htmlDoc.DocumentNode.SelectSingleNode(gameinfoXpath).InnerHtml;
-            }
-            else
-            {
-                Team1 = htmlDoc.DocumentNode.SelectSingleNode(Team1Xpath).InnerText;
-                Team2 = htmlDoc.DocumentNode.SelectSingleNode(Team2Xpath).InnerText;
+            var LeadC = doc.DocumentNode.SelectNodes(FourFactors)[0].InnerHtml;
+            //var LeadC2 = doc.DocumentNode.SelectNodes("//*[@id=\"four_factors\"]");  //[0].InnerHtml;
 
-                Rate = Int32.Parse(htmlDoc.DocumentNode.SelectSingleNode(RatingXpath).InnerText);
 
-                //\n\t\t\t\t\t\n\t\t\t\n\t\t\t\t\t\t\n\t\t\t\t\t\t\tFinal - 10/16/18\n\t\t\t\t\t\t\n\t\t\t\t\t\n\t\t\t\t
-                Date = htmlDoc.DocumentNode.SelectSingleNode(DateXpath).InnerText.Split("Final - ")[1].Split(@"\")[0];
-            }
+        //    string urlpbp = BasRefLinkpbp + date + '0' + home.ToUpper() + ".html";
+
+        //    var web2 = new HtmlWeb();
+        //    var doc2 = web2.Load(urlpbp);
+        //    var TimesTNN = doc2.DocumentNode.SelectNodes("//*[@id=\"st_0\"]")[0].InnerHtml;
+        //    var TimesT = doc2.DocumentNode.SelectNodes(TiesLeadChanges)[0].InnerHtml;
+        //    var Tot1 = doc2.DocumentNode.SelectNodes(MostConsecutivePoints)[0].InnerHtml;
+        //    var Tot2 = doc2.DocumentNode.SelectNodes(LongestScoringDrought)[0].InnerHtml;
+        //
         }
-
-
-
-
-
 
         public static async Task<string> LoadAndWaitForSelector(String url, String selector)
         {

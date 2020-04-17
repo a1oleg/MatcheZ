@@ -1,40 +1,16 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 using HtmlAgilityPack;
-using PuppeteerSharp;
-
-using OpenQA.Selenium;
-using OpenQA.Selenium.Firefox;
-using OpenQA.Selenium.Support.UI;
-using SeleniumExtras.WaitHelpers;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Opera;
 
 namespace Matchez
 {
-    
+
     public class ThuuzMatch
     {
         static string ThuuzLink = "https://www.thuuz.com/basketball/nba/game/";
 
         static string Thuuz2dgraphLink = "https://www.thuuz.com/2dgraph/";
-
-        //static string tbodyXpath = "//*[@id=\"wisbb_bsPlayerStats\"]/div[2]/table/tbody";
-
-        //static string gameinfoXpath = "//*[@id=\"wisbb_bsPlayerStats\"]/div[4]";
-
-
-        static string ThuuzSelector = "#circle > div";
-
-        static readonly string DateXpath = "/html/body/div[2]/div[2]/table/tbody/tr/td[2]";
-
-        static readonly string Team1Xpath = "/html/body/div[2]/div[3]/div[1]/table/tbody/tr[1]/td[2]/div";
-
-        static readonly string Team2Xpath = "/html/body/div[2]/div[3]/div[1]/table/tbody/tr[2]/td[1]/div";
-
 
         public string Team1 { get; set; }
         public string Team2 { get; set; }
@@ -47,8 +23,6 @@ namespace Matchez
         public List<int> gec_away { get; set; }
         public List<int> gec_home { get; set; }
 
-
-
         public ThuuzMatch(int _id)
         {
             ThuuzId = _id;
@@ -56,7 +30,9 @@ namespace Matchez
             string urlGec = Thuuz2dgraphLink + _id;
 
             GetGec(urlGec);
-            GetTeamsDates(urlTD);
+
+            if(this.ThuuzId != 0)
+                GetTeamsDates(urlTD);
         }        
 
         public void GetGec(String url)
@@ -64,15 +40,23 @@ namespace Matchez
             var web = new HtmlWeb();
             var doc = web.Load(url);
             var arrs = doc.Text.Split("_data = \"");
+            try
+            {
+                var var_gecL = arrs[1].Split(',').Take(50).ToList();
+                this.gec = Remover(var_gecL);
+                if (gec.Count() > 0)
+                    this.avgec = (int)gec.Average();
+                var var_gec_awayL = arrs[2].Split(',').Take(50).ToList();
+                this.gec_away = Remover(var_gec_awayL);
+                var var_gec_homeL = arrs[3].Split(',').Take(50).ToList();
+                this.gec_home = Remover(var_gec_homeL);
 
-            var var_gecL = arrs[1].Split(',').Take(50).ToList();
-            this.gec = Remover(var_gecL);
-            if(gec.Count() > 0)
-                this.avgec = (int)gec.Average();
-            var var_gec_awayL = arrs[2].Split(',').Take(50).ToList();
-            this.gec_away = Remover(var_gec_awayL);
-            var var_gec_homeL = arrs[3].Split(',').Take(50).ToList();
-            this.gec_home = Remover(var_gec_homeL);
+            }
+            catch
+            {
+                this.ThuuzId = 0;
+            }
+            
         }
 
         public void GetTeamsDates(String url)
@@ -80,22 +64,25 @@ namespace Matchez
             var web = new HtmlWeb();
             var doc = web.Load(url);
 
-            //"Upcoming - 7:00 PM (EDT) 11/1/12
+           
             try
             {
                 Date = doc.Text.Split("Final - ")[1].Substring(0, 8);
             }
             catch
             {
-                try
+                try //"Upcoming - 7:00 PM (EDT) 11/1/12
                 {
                     Date = doc.Text.Split("DT) ")[1].Substring(0, 8);
                 }
                 catch
-                {
+                { //"Upcoming - 7:00 PM (EST) 11/1/12
                     Date = doc.Text.Split("ST) ")[1].Substring(0, 8);
-                }
-                
+                }                
+            }
+            finally
+            {
+                Date = Date.Trim();
             }
 
 
@@ -115,23 +102,6 @@ namespace Matchez
             }
             return wn;
         }
-        public static async Task<string> LoadAndWaitForSelector(String url, String selector)
-        {
-            var browser = await Puppeteer.LaunchAsync(new LaunchOptions
-            {
-                Headless = true,
-                ExecutablePath = @"c:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
-            });
-            using (Page page = await browser.NewPageAsync())
-            {
-                await page.GoToAsync(url);
-                await page.WaitForSelectorAsync(selector);
-                //var x = page.QuerySelectorAsync(selector);
-                var x = await page.GetContentAsync();
-                browser.Dispose();
-                return x;
-            }
-        }
-
+        
     }
 }
