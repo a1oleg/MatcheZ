@@ -14,11 +14,21 @@ namespace Matchez
         static void Main(string[] args)
         {
 
+            Repo.StartLocale();
 
-            PupMatch fm = new PupMatch(20121104, "ORL");
+            ThuuzMatch oms = Repo.GetExist().First();
+
+            var s = oms.Date.Split('/');
+            string year = "20" + s[2];
+            string month = ("0" + s[0]).Substring(-1, 2) ;
+            string day = ("0" + s[1]).Substring(-1, 2);
+
+            string ss = year + month + day;
+                //PupMatch fm = new PupMatch(20121104, "ORL");
+            BasRefMatch fm = new BasRefMatch(20121104, "ORL");
 
 
-            //Repo.StartLocale();
+            
             ////211104 212333  1229     33329 – 34471 = – 1142  
             //for (int i = 265141; i <= 266114; i++)
             //{

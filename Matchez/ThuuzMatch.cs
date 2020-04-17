@@ -14,6 +14,8 @@ namespace Matchez
 
         public string Team1 { get; set; }
         public string Team2 { get; set; }
+        public string T1s { get; set; }
+        public string T2s { get; set; }
         public int ThuuzId { get; set; }        
         public string Date { get; set; }
 

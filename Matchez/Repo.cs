@@ -28,96 +28,33 @@ namespace Matchez
                 db.Connect();
             }
         }
-
-
-
-        internal static void MergeUsers(IEnumerable<int> ids)
-        {
-            db.Cypher
-            .Unwind(ids, "id")
-            .Create("(u:User{user_id:id})")
-            //.Where("u.id = id")            
-            .ExecuteWithoutResults();
-        }
-
+        
         internal static void MergeThuuzMatch(ThuuzMatch ev)
         {
             db.Cypher
              .Create("(e:Game{newUser})")
              .WithParam("newUser", ev)             
              .ExecuteWithoutResults();
+        }       
 
-        }
-
-
-
-
-        internal static void MergeUser(int _id)
-        {
-            db.Cypher
-            .Merge($"(u:User{{Id:{_id}}})")
-            .ExecuteWithoutResults();
-        }
-
-
-
-        internal static List<int> GetExist()
+        internal static List<ThuuzMatch> GetExist()
         {
             return db.Cypher
-            .Match($"(e:Event)")
-            .Where("not EXISTS( (:Event)-[]->(e) )")
-            .With("e.Id AS iid")
-            .Return(iid => iid.CollectAs<int>())
-            .Results.First().Distinct().ToList();
+            .Match("(e:Game)")            
+            .Return(e => e.CollectAs<ThuuzMatch>())
+            .Results.First().ToList();
         }
 
-
-
-
-        internal static void CreateQuery(string query)
+        internal static void MergeBasRefMatch(BasRefMatch brm, int id)
         {
-
-            try
-            {
-                db.Cypher
-                .Create(query)
-                .ExecuteWithoutResults();
-            }
-            catch
-            {
-                db.Cypher
-               .Merge("(:Query{Value:{v}})")
-               .WithParam("v", query)
-               .ExecuteWithoutResults();
-            }
-
-        }
-        internal static void MergePages()
-        {
-            var names = new[] {
-            "workbook",
-            "rooms.lesson.no-rev",
-            "showcase",
-            "rooms.view.step.grammar",
-            "rooms.lesson.rev.step.content",//-
-            "download-apps",
-            "rooms.lesson.rev.step.grammar",
-            "rooms.homework-showcase",
-            "rooms.view.step.attachments",
-            "notes",
-            "rooms.lesson.rev.step.attachments",
-            "words.vocabulary",
-            "rooms.student-showcase",
-            "rooms.view.step.content",//-
-            "rooms.test.step",
-            "video.test",
-            "rooms.test-showcase",
-            };
-
             db.Cypher
-            .Unwind(names, "name")
-              .Merge("(p:Page{Name:name})")
-              .ExecuteWithoutResults();
+             .Create("(nm:BRGame{newUser})")
+             .WithParam("newUser", brm)
+             .With("nm")
+             .Match("(om:ThuuzMatch{Id:$_id})")
+             .WithParam("_id", id)
+             .Merge("(om)-[:mm]->[nm]")
+             .ExecuteWithoutResults();
         }
     }
 }
