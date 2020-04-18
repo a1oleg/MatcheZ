@@ -37,12 +37,14 @@ namespace Matchez
              .ExecuteWithoutResults();
         }       
 
-        internal static List<ThuuzMatch> GetExist()
+        internal static List<ThuuzMatch> GetExist(string team)
         {
             return db.Cypher
-            .Match("(e:Game)")            
-            .Return(e => e.CollectAs<ThuuzMatch>())
-            .Results.First().ToList();
+            .Match("(t:Team)-[:Team2]->(g:Game)")
+            .Where($"t.Name = '{team}'")
+            .With("g.Date as gd, g.Id as gid, g.T2s as t")
+            .Return((gd,gid,t) => new ThuuzMatch() { Id = gid.As<int>(), Date = gd.As<string>(), T2s = t.As<string>() })
+            .Results.ToList();
         }
 
         internal static void MergeBasRefMatch(BasRefMatch brm, int id)
@@ -51,9 +53,9 @@ namespace Matchez
              .Create("(nm:BRGame{newUser})")
              .WithParam("newUser", brm)
              .With("nm")
-             .Match("(om:ThuuzMatch{Id:$_id})")
+             .Match("(om:Game{Id:{_id}})")
              .WithParam("_id", id)
-             .Merge("(om)-[:mm]->[nm]")
+             .Merge("(om)-[:mm]->(nm)")
              .ExecuteWithoutResults();
         }
     }

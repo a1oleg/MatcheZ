@@ -34,38 +34,47 @@ namespace Matchez
         public int homemcp { get; set; }
         public string awaylsd { get; set; }
         public string homelsd { get; set; }
+        public string url { get; set; }
     
 
 
-        public BasRefMatch(int date, string home)
+        public BasRefMatch(string date, string home)
         {
-            //string url = BasRefLink + date + '0' + home.ToUpper() + ".html";
-            //var web = new HtmlWeb();
-            //var doc = web.Load(url);
-
-            //var x = doc.Text.Split("Four Factors")[8].Split("Game")[0].Split("</td>");
-            
-            //Pace = Double.Parse(x[0].Split(">").Last().Replace('.', ','));
-            //eFG = Double.Parse('0' + x[1].Split(">").Last().Replace('.', ','));
-            //TOV = Double.Parse(x[2].Split(">").Last().Replace('.', ','));
-            //ORB = Double.Parse(x[3].Split(">").Last().Replace('.', ','));
-            //FTFGA = Double.Parse('0' + x[4].Split(">").Last().Replace('.', ','));
-            //ORtg = Double.Parse(x[5].Split(">").Last().Replace('.', ','));
-
-            //Pace2 = Double.Parse(x[6].Split(">").Last().Replace('.', ','));
-            //eFG2 = Double.Parse('0' + x[7].Split(">").Last().Replace('.', ','));
-            //TOV2 = Double.Parse(x[8].Split(">").Last().Replace('.', ','));
-            //ORB2 = Double.Parse(x[9].Split(">").Last().Replace('.', ','));
-            //FTFGA2 = Double.Parse('0' + x[10].Split(">").Last().Replace('.', ','));
-            //ORtg2 = Double.Parse(x[11].Split(">").Last().Replace('.', ','));
-
-
+            url = BasRefLink + date + '0' + home.ToUpper() + ".html";
             string urlpbp = BasRefLinkpbp + date + '0' + home.ToUpper() + ".html";
 
-            var web2 = new HtmlWeb();
-            var doc2 = web2.Load(urlpbp);
 
-            var y = doc2.Text.Split("placeholder").Last().Split("</td></tr>");//.Take(9);
+            var web = new HtmlWeb();
+            var doc0 = web.LoadFromWebAsync(url);
+
+            var web2 = new HtmlWeb();
+            var doc2 = web2.LoadFromWebAsync(urlpbp);
+
+            doc0.Wait();
+            var doc1 = doc0.Result;
+            var x = doc1.Text.Split("Four Factors")[8].Split("Game")[0].Split("</td>");
+
+            Pace = Double.Parse(x[0].Split(">").Last().Replace('.', ','));
+            eFG = Double.Parse('0' + x[1].Split(">").Last().Replace('.', ','));
+            TOV = Double.Parse(x[2].Split(">").Last().Replace('.', ','));
+            ORB = Double.Parse(x[3].Split(">").Last().Replace('.', ','));
+            FTFGA = Double.Parse('0' + x[4].Split(">").Last().Replace('.', ','));
+            ORtg = Double.Parse(x[5].Split(">").Last().Replace('.', ','));
+
+            Pace2 = Double.Parse(x[6].Split(">").Last().Replace('.', ','));
+            eFG2 = Double.Parse('0' + x[7].Split(">").Last().Replace('.', ','));
+            TOV2 = Double.Parse(x[8].Split(">").Last().Replace('.', ','));
+            ORB2 = Double.Parse(x[9].Split(">").Last().Replace('.', ','));
+            FTFGA2 = Double.Parse('0' + x[10].Split(">").Last().Replace('.', ','));
+            ORtg2 = Double.Parse(x[11].Split(">").Last().Replace('.', ','));
+
+
+
+            //var web2 = new HtmlWeb();
+            //var doc2 = web2.Load(urlpbp);
+            doc2.Wait();
+            var doc3 = doc2.Result;
+            var y = doc3.Text.Split("placeholder").Last().Split("</td></tr>");//.Take(9);
 
             Ties = Int32.Parse(y[0].Split(">").Last());
             Leadchanges = Int32.Parse('0' + y[1].Split(">").Last());

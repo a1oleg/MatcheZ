@@ -16,7 +16,7 @@ namespace Matchez
         public string Team2 { get; set; }
         public string T1s { get; set; }
         public string T2s { get; set; }
-        public int ThuuzId { get; set; }        
+        public int Id { get; set; }        
         public string Date { get; set; }
 
         public List<int> gec { get; set; }
@@ -27,15 +27,19 @@ namespace Matchez
 
         public ThuuzMatch(int _id)
         {
-            ThuuzId = _id;
+            Id = _id;
             string urlTD = ThuuzLink + _id;
             string urlGec = Thuuz2dgraphLink + _id;
 
             GetGec(urlGec);
 
-            if(this.ThuuzId != 0)
+            if(this.Id != 0)
                 GetTeamsDates(urlTD);
-        }        
+        }
+
+        public ThuuzMatch()
+        {
+        }
 
         public void GetGec(String url)
         {
@@ -56,7 +60,7 @@ namespace Matchez
             }
             catch
             {
-                this.ThuuzId = 0;
+                this.Id = 0;
             }
             
         }
