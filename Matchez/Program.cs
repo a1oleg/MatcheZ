@@ -16,9 +16,9 @@ namespace Matchez
 
             Repo.StartLocale();
 
-            var oms = Repo.GetExist("Boston Celtics");
-
-            foreach(ThuuzMatch tm in oms)
+            var oms = Repo.GetExist("Orlando Magic");
+            //Orlando Magic
+            foreach (ThuuzMatch tm in oms)
             {
                 var s = tm.Date.Split('/');
                 string year = "20" + s[2];

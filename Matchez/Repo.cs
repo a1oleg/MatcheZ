@@ -42,6 +42,7 @@ namespace Matchez
             return db.Cypher
             .Match("(t:Team)-[:Team2]->(g:Game)")
             .Where($"t.Name = '{team}'")
+            .AndWhere("g.ORB is null")
             .With("g.Date as gd, g.Id as gid, g.T2s as t")
             .Return((gd,gid,t) => new ThuuzMatch() { Id = gid.As<int>(), Date = gd.As<string>(), T2s = t.As<string>() })
             .Results.ToList();
